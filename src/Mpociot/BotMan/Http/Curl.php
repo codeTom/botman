@@ -25,6 +25,14 @@ class Curl implements HttpInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function get($url, array $urlParameters = [], array $headers = [], $asJSON = false ){
+        $request = $this->prepareRequest($url, $urlParameters, $headers);
+        return $this->executeRequest($request);
+    }
+
+    /**
      * Prepares a request using curl.
      *
      * @param  string $url        [description]

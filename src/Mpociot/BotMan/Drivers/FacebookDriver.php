@@ -89,6 +89,7 @@ class FacebookDriver extends Driver
         return $this->http->post('https://graph.facebook.com/v2.6/me/messages', [], $parameters);
     }
 
+
     /**
      * @param  Message $message
      *
@@ -230,6 +231,18 @@ class FacebookDriver extends Driver
      */
     public function getUser(Message $matchingMessage)
     {
-        return new User($matchingMessage->getChannel());
+        $req = $this->http->get('https://graph.facebook.com/v2.6/'.$matchingMessage->getChannel(),
+                ['fields'=>'first_name,last_name,profile_pic,locale,timezone,gender',
+                 'access_token' => $this->config->get('facebook_token')
+                ]);
+        if($req->getStatusCode()!=200)
+            return new User($matchingMessage->getChannel());
+        $data = json_decode($req->getContent());
+        $u=new User($matchingMessage->getChannel(),$data->first_name, $data->last_name);
+        $u->locale = $data->locale;
+        $u->gender = $data->gender;
+        $u->timezone = $data->timezone;
+        $u->profile_pic = $data->profile_pic;
+        return $u;
     }
 }
