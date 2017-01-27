@@ -238,11 +238,13 @@ class FacebookDriver extends Driver
         if($req->getStatusCode()!=200)
             return new User($matchingMessage->getChannel());
         $data = json_decode($req->getContent());
-        $u=new User($matchingMessage->getChannel(),$data->first_name, $data->last_name);
-        $u->locale = $data->locale;
-        $u->gender = $data->gender;
-        $u->timezone = $data->timezone;
-        $u->profile_pic = $data->profile_pic;
+        $u=new User($matchingMessage->getChannel(),$data->first_name, $data->last_name, NULL,
+            ['locale' => $data->locale,
+             'gender' => $data->gender,
+             'timezone' => $data->timezone,
+             'profile_pic' => $data->profile_pic
+            ]
+        );
         return $u;
     }
 }
