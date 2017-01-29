@@ -9,6 +9,9 @@ class Answer
 
     /** @var string */
     protected $value;
+    
+    /** @var array */
+    protected $attachments;
 
     /** @var string */
     protected $callbackId;
@@ -114,5 +117,18 @@ class Answer
         $this->isInteractiveReply = $interactiveReply;
 
         return $this;
+    }
+    
+    /**
+    * @param array $attachments
+    * @return $this
+    */
+    public function setAttachments(array $attachments){
+    	$this->attachments=$attachments;
+	return $this;
+    }
+
+    public function getAttachments(){
+    	return $this->attachments;
     }
 }
