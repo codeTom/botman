@@ -58,7 +58,7 @@ class FacebookDriver extends Driver
     {
         $validSignature = ! $this->config->has('facebook_app_secret') || $this->validateSignature();
         $messages = Collection::make($this->event->get('messaging'))->filter(function ($msg) {
-            return isset($msg['message']) && isset($msg['message']['text']);
+            return isset($msg['message']) && ( isset($msg['message']['text']) || $msg['message']['attachments'] );
         });
 
         return ! $messages->isEmpty() && $validSignature;
@@ -120,8 +120,8 @@ class FacebookDriver extends Driver
     {
         $messages = Collection::make($this->event->get('messaging'));
         $messages = $messages->transform(function ($msg) {
-            if (isset($msg['message']) && isset($msg['message']['text'])) {
-                return new Message($msg['message']['text'], $msg['recipient']['id'], $msg['sender']['id'], $msg);
+            if (isset($msg['message']) && (isset($msg['message']['text']) || $msg['message']['attachments'])) {
+                return new Message(isset($msg['message']['text'])?$msg['message']['text']:"", $msg['recipient']['id'], $msg['sender']['id'], $msg);
             }
 
             return new Message('', '', '');
